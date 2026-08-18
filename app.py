@@ -7,7 +7,7 @@ from pathlib import Path
 # ==========================================
 # ตั้งค่าหน้าเว็บและข้อมูลผู้พัฒนา
 # ==========================================
-st.set_page_config(page_title="ทำนายราคารถมือสอง", page_icon="🚗", layout="wide")
+st.set_page_config(page_title="ทำนายราคารถมือสอง", page_icon="", layout="wide")
 
 # --- ส่วนแสดงข้อมูลผู้พัฒนา ---
 DEVELOPER_NAME = "นายสมชาย ใจดี"
@@ -15,10 +15,9 @@ STUDENT_ID = "65012345678"
 SECTION = "หมู่เรียน 30"
 GITHUB_URL = "https://github.com/uwa14869-cpu"
 
-# ✅ ใช้ Path เพื่อหาไฟล์รูปในโฟลเดอร์เดียวกันกับ app.py
-# เปลี่ยน 'profile.jpg' เป็นชื่อไฟล์รูปจริงของคุณ
+# ✅ ใช้ Path object แทน String เพื่อให้ใช้ .exists() ได้
 IMAGE_FILE = "030.jpg" 
-PROFILE_IMAGE_URL = "https://raw.githubusercontent.com/uwa14869-cpu/mini030/main/030.jpg"
+image_path = Path(__file__).parent / IMAGE_FILE
 
 # โหลดโมเดล
 @st.cache_resource
@@ -41,20 +40,21 @@ model, scaler, le_brand, le_model, le_fuel, le_trans, is_loaded = load_assets()
 # ==========================================
 st.title("🚗 ระบบทำนายราคารถมือสอง")
 
-# แสดงข้อมูลผู้พัฒนาพร้อมรูปภาพจากไฟล์
+# แสดงข้อมูลผู้พัฒนาพร้อมรูปภาพ
 col_img, col_info = st.columns([1, 4])
 
 with col_img:
-    if PROFILE_IMAGE_URL.exists():
-        st.image(str(PROFILE_IMAGE_URL), width=150, caption="ผู้พัฒนา")
+    # ✅ แก้ไขตรงจุดที่ Error: เช็คว่า image_path มีอยู่จริงไหม
+    if image_path.exists():
+        st.image(str(image_path), width=150, caption="ผู้พัฒนา")
     else:
-        # กรณีหาไฟล์รูปไม่เจอ จะแสดงข้อความเตือนแทนรูป
-        st.warning(f"⚠️ ไม่พบไฟล์ `{IMAGE_FILE}`\nกรุณาอัปโหลดรูปขึ้น GitHub")
-        st.image(PROFILE_IMAGE_URL, width=150, caption="ผู้พัฒนา")
+        # ถ้าหาไฟล์ไม่เจอ ให้แสดง Placeholder แทน ไม่ให้แอปพัง
+        st.warning(f"⚠️ ไม่พบไฟล์ `{IMAGE_FILE}` ใน GitHub")
+        st.markdown("![Profile](https://via.placeholder.com/150?text=No+Image)")
 
 with col_info:
     st.info(f"""
-    **‍💻 ผู้พัฒนา:** {DEVELOPER_NAME}  
+    **👨‍💻 ผู้พัฒนา:** {DEVELOPER_NAME}  
     **🎓 รหัสนักศึกษา:** {STUDENT_ID} | **{SECTION}**  
     **🔗 GitHub:** [{GITHUB_URL}]({GITHUB_URL})  
     **📅 ปีการศึกษา:** 2569 (2026)
