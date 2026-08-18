@@ -17,7 +17,7 @@ GITHUB_URL = "https://github.com/uwa14869-cpu"
 
 # ✅ ใช้ Path object แทน String เพื่อให้ใช้ .exists() ได้
 IMAGE_FILE = "030.jpg" 
-image_path = Path(__file__).parent / IMAGE_FILE
+img_path = Path(__file__).parent / IMAGE_FILE
 
 # โหลดโมเดล
 @st.cache_resource
@@ -45,8 +45,8 @@ col_img, col_info = st.columns([1, 4])
 
 with col_img:
     # ✅ แก้ไขตรงจุดที่ Error: เช็คว่า image_path มีอยู่จริงไหม
-    if image_path.exists():
-        st.image(str(image_path), width=150, caption="ผู้พัฒนา")
+    if img_path.exists():
+        st.image(str(img_path), width=150, caption="ผู้พัฒนา")
     else:
         # ถ้าหาไฟล์ไม่เจอ ให้แสดง Placeholder แทน ไม่ให้แอปพัง
         st.warning(f"⚠️ ไม่พบไฟล์ `{IMAGE_FILE}` ใน GitHub")
