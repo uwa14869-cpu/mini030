@@ -16,7 +16,7 @@ SECTION = "หมู่เรียน 30"
 GITHUB_URL = "https://github.com/uwa14869-cpu"
 
 # ✅ ใช้ Path object แทน String เพื่อให้ใช้ .exists() ได้
-IMAGE_FILE = "030.jpg" 
+IMAGE_FILE = "030.jpg.jpg" 
 img_path = Path(__file__).parent / IMAGE_FILE
 
 # โหลดโมเดล
