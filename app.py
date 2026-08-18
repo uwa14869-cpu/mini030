@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Used Car Price Predictor Web App - Streamlit
+Used Car Price Predictor Web App - Streamlit (Enhanced UI)
 """
 
 import streamlit as st
@@ -11,7 +11,7 @@ import os
 import base64
 
 # ============================================================
-# ⭐ ข้อมูลผู้พัฒนา (แก้ไขข้อมูลตรงนี้ได้ตามต้องการ)
+# ⭐ ข้อมูลผู้พัฒนา
 # ============================================================
 DEVELOPER_NAME = "นายภาณุพงศ์ ภุ่มพันธ์วงค์"
 DEVELOPER_ID   = "664245030"
@@ -30,75 +30,143 @@ st.set_page_config(
 )
 
 # ==========================================
-# Custom CSS สำหรับความสวยงาม
+# Custom CSS สำหรับความสวยงาม (ปรับปรุงใหม่)
 # ==========================================
 st.markdown("""
 <style>
-    /* พื้นหลังหลัก */
+    /* 1. พื้นหลังหลัก: เปลี่ยนเป็นโทนขาว-ฟ้าอ่อน สบายตา */
     .stApp {
-        background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf3 100%);
+        background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%) !important;
     }
     
-    /* Header */
+    /* 2. ปรับสีตัวอักษรหลักให้อ่านง่าย สบายตา */
+    .stApp p, .stApp div, .stApp label, .stApp span {
+        color: #475569 !important; /* Slate Gray */
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        color: #1e293b !important; /* Deep Slate สำหรับหัวข้อ */
+        font-weight: 700 !important;
+    }
+
+    /* 3. Header: ปรับ Gradient ให้สดใสและทันสมัยขึ้น */
     .main-header {
-        background: linear-gradient(135deg, #4C1FFF 0%, #764ba2 100%);
-        padding: 2rem;
-        border-radius: 15px;
-        color: white;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        padding: 2.5rem 2rem;
+        border-radius: 20px;
+        color: white !important;
         text-align: center;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        margin-bottom: 2rem;
+        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+        margin-bottom: 2.5rem;
     }
     
     .main-header h1 {
-        margin: 0;
-        font-size: 2.5rem;
-        font-weight: 700;
-    }
-    
-    /* Card */
-    .card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        margin-bottom: 1rem;
-    }
-    
-    /* Sidebar */
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
-    }
-    [data-testid="stSidebar"] * {
         color: white !important;
+        margin: 0;
+        font-size: 2.8rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+    
+    .main-header p {
+        color: rgba(255, 255, 255, 0.9) !important;
+        margin-top: 0.8rem;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+    
+    /* 4. Card: เพิ่มเอฟเฟกต์ Glassmorphism และเงาที่นุ่มนวล */
+    .card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 1.8rem;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.08);
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(99, 102, 241, 0.15);
+        border-color: rgba(99, 102, 241, 0.3);
+    }
+    
+    .card h3 {
+        color: #4f46e5 !important;
+        margin-bottom: 1.2rem !important;
+        font-size: 1.3rem;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 0.5rem;
     }
 
-    /* ⭐ Developer Section CSS */
+    /* 5. ปรับแต่ง Input Fields ให้สวยงาม */
+    .stTextInput > div > div > input,
+    .stSelectbox > div > div > div,
+    .stNumberInput > div > div > input {
+        background-color: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 10px !important;
+        color: #1e293b !important;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    
+    .stTextInput > div > div > input:focus,
+    .stSelectbox > div > div > div:focus,
+    .stNumberInput > div > div > input:focus {
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+        background-color: #ffffff !important;
+    }
+
+    /* 6. ปรับแต่งปุ่ม */
+    .stButton > button {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+        color: white !important;
+        border: none !important;
+        padding: 0.8rem 2rem !important;
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        font-size: 1.1rem !important;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6) !important;
+    }
+
+    /* 7. Developer Section: ปรับให้กลมกลืนและพรีเมียมขึ้น */
     .dev-section-title {
         text-align: center;
-        color: #2c3e50;
+        color: #1e293b !important;
         font-size: 2rem;
-        font-weight: bold;
+        font-weight: 800;
         margin: 3rem 0 1.5rem 0;
+        letter-spacing: -0.5px;
     }
     
     .dev-card-container {
-        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-        border-radius: 25px;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        border-radius: 24px;
         padding: 2.5rem;
-        box-shadow: 0 15px 35px rgba(76, 31, 255, 0.15);
+        box-shadow: 0 15px 35px rgba(99, 102, 241, 0.1);
         margin: 1rem auto;
         max-width: 900px;
         display: flex;
         align-items: center;
         gap: 2.5rem;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: 1px solid rgba(76, 31, 255, 0.1);
+        border: 1px solid rgba(99, 102, 241, 0.15);
     }
     
     .dev-card-container:hover {
         transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(76, 31, 255, 0.25);
+        box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
     }
     
     .dev-image-wrapper {
@@ -111,16 +179,16 @@ st.markdown("""
         height: 180px;
         border-radius: 50%;
         object-fit: cover;
-        border: 5px solid #4C1FFF;
-        box-shadow: 0 8px 20px rgba(76, 31, 255, 0.3);
+        border: 4px solid #ffffff;
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
     }
     
     .dev-image-wrapper::after {
         content: "🚗";
         position: absolute;
-        top: -5px;
-        right: -5px;
-        font-size: 2.5rem;
+        bottom: 5px;
+        right: 5px;
+        font-size: 2.2rem;
         background: white;
         border-radius: 50%;
         width: 50px;
@@ -128,7 +196,8 @@ st.markdown("""
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border: 3px solid #f8fafc;
     }
     
     .dev-info {
@@ -137,21 +206,22 @@ st.markdown("""
     
     .dev-name {
         font-size: 1.8rem;
-        font-weight: bold;
-        color: #2c3e50;
+        font-weight: 800;
+        color: #4f46e5 !important;
         margin: 0 0 0.8rem 0;
-        border-bottom: 3px solid #4C1FFF;
+        border-bottom: 3px solid #c7d2fe;
         padding-bottom: 0.5rem;
         display: inline-block;
     }
     
     .dev-detail {
         font-size: 1.05rem;
-        color: #4a5568;
+        color: #475569 !important;
         margin: 0.6rem 0;
         display: flex;
         align-items: center;
         gap: 0.8rem;
+        font-weight: 500;
     }
     
     .dev-detail-icon {
@@ -162,21 +232,22 @@ st.markdown("""
     
     .dev-badge {
         display: inline-block;
-        background: linear-gradient(135deg, #4C1FFF 0%, #764ba2 100%);
-        color: white;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white !important;
         padding: 0.5rem 1.5rem;
-        border-radius: 25px;
-        font-weight: bold;
-        margin-top: 1rem;
-        font-size: 0.95rem;
-        box-shadow: 0 4px 12px rgba(76, 31, 255, 0.3);
+        border-radius: 50px;
+        font-weight: 700;
+        margin-top: 1.2rem;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
     }
     
     @media (max-width: 768px) {
         .dev-card-container {
             flex-direction: column;
             text-align: center;
-            padding: 1.5rem;
+            padding: 2rem 1.5rem;
         }
         .dev-image-wrapper img {
             width: 150px;
@@ -196,13 +267,31 @@ st.markdown("""
         width: 180px;
         height: 180px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #4C1FFF 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 5rem;
-        border: 5px solid white;
-        box-shadow: 0 8px 20px rgba(76, 31, 255, 0.3);
+        border: 4px solid white;
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+    }
+
+    /* 8. Footer */
+    .custom-footer {
+        background: #1e293b;
+        color: #94a3b8 !important;
+        padding: 1.5rem;
+        border-radius: 16px 16px 0 0;
+        margin-top: 3rem;
+        text-align: center;
+    }
+    .custom-footer p {
+        color: #94a3b8 !important;
+        margin: 0.3rem 0;
+        font-size: 0.95rem;
+    }
+    .custom-footer strong {
+        color: #e2e8f0 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -245,7 +334,7 @@ model, scaler, le_brand, le_model, le_fuel, le_trans, is_loaded = load_assets()
 st.markdown("""
 <div class="main-header">
     <h1>🚗 ระบบทำนายราคารถมือสอง</h1>
-    <p style="margin-top: 0.5rem; opacity: 0.9;">Interactive Machine Learning Prediction System</p>
+    <p>Interactive Machine Learning Prediction System</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -299,7 +388,7 @@ else:
     st.error("⚠️ ไม่พบไฟล์โมเดล! กรุณาตรวจสอบว่าไฟล์ .pkl อยู่ในโฟลเดอร์เดียวกันกับไฟล์ app.py")
 
 # ============================================================
-# ⭐ Developer Section - จัดวางรูป ชื่อ หมู่เรียน ใหม่
+# ⭐ Developer Section
 # ============================================================
 st.markdown("---")
 st.markdown('<div class="dev-section-title">👨‍💻 ผู้พัฒนา / Developer</div>', unsafe_allow_html=True)
@@ -343,10 +432,9 @@ st.markdown("<br>", unsafe_allow_html=True)
 # ==========================================
 # Footer
 # ==========================================
-st.markdown("---")
 st.markdown(f"""
-<div style='text-align: center; color: #666; padding: 1rem;'>
+<div class="custom-footer">
     <p>© 2026 Used Car Price Prediction Project | Machine Learning Class</p>
-    <p>พัฒนาโดย: {DEVELOPER_NAME}</p>
+    <p>พัฒนาโดย: <strong>{DEVELOPER_NAME}</strong></p>
 </div>
 """, unsafe_allow_html=True)
