@@ -18,7 +18,7 @@ GITHUB_URL = "https://github.com/uwa14869-cpu"
 # ✅ ฟังก์ชันค้นหารูปอัตโนมัติ (รองรับหลายนามสกุล/ชื่อไฟล์)
 def find_profile_image():
     possible_names = ["030.jpg", "030.png", "profile.jpg", "profile.png", "dev.jpg"]
-    base_path = Path(__file__).parent
+    base_path = Path("030.jpg").parent
     
     for name in possible_names:
         img_file = base_path / name
