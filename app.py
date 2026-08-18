@@ -2,20 +2,25 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
+from pathlib import Path
 
 # ==========================================
 # ตั้งค่าหน้าเว็บและข้อมูลผู้พัฒนา
 # ==========================================
 st.set_page_config(page_title="ทำนายราคารถมือสอง", page_icon="🚗", layout="wide")
 
-# --- ส่วนแสดงข้อมูลผู้พัฒนา (แก้ไขตรงนี้) ---
-DEVELOPER_NAME = "นายภาณุพงศ์ ภุ่มพันธ์วงค์"          # <-- ใส่ชื่อ-นามสกุล จริง
-STUDENT_ID = "664245030"               # <-- ใส่รหัสนักศึกษา
-SECTION = "หมู่เรียน 66/43"                 # <-- ใส่เลขหมู่เรียน
-GITHUB_URL = "https://github.com/uwa14869-cpu"  # ✅ ลิงก์ GitHub ของคุณ
-# -----------------------------------------
+# --- ส่วนแสดงข้อมูลผู้พัฒนา ---
+DEVELOPER_NAME = "นายสมชาย ใจดี"
+STUDENT_ID = "65012345678"
+SECTION = "หมู่เรียน 30"
+GITHUB_URL = "https://github.com/uwa14869-cpu"
 
-# โหลดโมเดลและเครื่องมือที่บันทึกไว้
+# ✅ ใช้ Path เพื่อหาไฟล์รูปในโฟลเดอร์เดียวกันกับ app.py
+# เปลี่ยน 'profile.jpg' เป็นชื่อไฟล์รูปจริงของคุณ
+IMAGE_FILE = "030.jpg" 
+image_path = Path(__file__).parent / IMAGE_FILE
+
+# โหลดโมเดล
 @st.cache_resource
 def load_assets():
     try:
@@ -26,23 +31,34 @@ def load_assets():
         le_fuel = joblib.load('le_fuel.pkl')
         le_trans = joblib.load('le_trans.pkl')
         return model, scaler, le_brand, le_model, le_fuel, le_trans, True
-    except FileNotFoundError as e:
+    except FileNotFoundError:
         return None, None, None, None, None, None, False
 
 model, scaler, le_brand, le_model, le_fuel, le_trans, is_loaded = load_assets()
 
 # ==========================================
-# UI หลักของ Streamlit Application
+# UI หลัก
 # ==========================================
-st.title(" ระบบทำนายราคารถมือสอง")
+st.title("🚗 ระบบทำนายราคารถมือสอง")
 
-# แสดงกล่องข้อมูลผู้พัฒนาพร้อมลิงก์ GitHub ที่คลิกได้
-st.info(f"""
-**👨‍ ผู้พัฒนา:** {DEVELOPER_NAME}  
-**🎓 รหัสนักศึกษา:** {STUDENT_ID} | **{SECTION}**  
-** GitHub Repository:** [{GITHUB_URL}]({GITHUB_URL})  
-**📅 ปีการศึกษา:** 2569 (2026)
-""")
+# แสดงข้อมูลผู้พัฒนาพร้อมรูปภาพจากไฟล์
+col_img, col_info = st.columns([1, 4])
+
+with col_img:
+    if image_path.exists():
+        st.image(str(image_path), width=150, caption="ผู้พัฒนา")
+    else:
+        # กรณีหาไฟล์รูปไม่เจอ จะแสดงข้อความเตือนแทนรูป
+        st.warning(f"⚠️ ไม่พบไฟล์ `{IMAGE_FILE}`\nกรุณาอัปโหลดรูปขึ้น GitHub")
+        st.markdown("![Placeholder](https://via.placeholder.com/150)")
+
+with col_info:
+    st.info(f"""
+    **‍💻 ผู้พัฒนา:** {DEVELOPER_NAME}  
+    **🎓 รหัสนักศึกษา:** {STUDENT_ID} | **{SECTION}**  
+    **🔗 GitHub:** [{GITHUB_URL}]({GITHUB_URL})  
+    **📅 ปีการศึกษา:** 2569 (2026)
+    """)
 
 st.markdown("---")
 
@@ -64,31 +80,23 @@ if is_loaded:
         st.markdown("<br>", unsafe_allow_html=True)
         predict_btn = st.button("🔮 ทำนายราคา", type="primary", use_container_width=True)
 
-    # Logic การทำนาย
     if predict_btn:
         try:
-            # Encode ข้อมูล input
             input_data = pd.DataFrame({
-                'Year': [year],
-                'Mileage_km': [mileage],
+                'Year': [year], 'Mileage_km': [mileage],
                 'Brand_Enc': le_brand.transform([brand]),
                 'Model_Enc': le_model.transform([model_name]),
                 'Fuel_Enc': le_fuel.transform([fuel]),
                 'Trans_Enc': le_trans.transform([transmission])
             })
             
-            # Transform ด้วย Scaler
             input_scaled = scaler.transform(input_data)
-            
-            # ทำนาย
             predicted_price = model.predict(input_scaled)[0]
             
-            # แสดงผลลัพธ์แบบเด่นชัด
             st.success(f"💰 ราคาที่ทำนายได้: **{predicted_price:,.0f} บาท**")
             
-            # แสดงรายละเอียด Input
             st.markdown("---")
-            st.subheader(" สรุปข้อมูลที่กรอก")
+            st.subheader("📋 สรุปข้อมูลที่กรอก")
             summary = pd.DataFrame({
                 "ฟีเจอร์": ["ยี่ห้อ", "รุ่น", "ปี", "ไมล์", "เชื้อเพลิง", "เกียร์"],
                 "ค่าที่กรอก": [brand, model_name, year, f"{mileage:,} กม.", fuel, transmission]
@@ -100,8 +108,6 @@ if is_loaded:
 
 else:
     st.error("⚠️ ไม่พบไฟล์โมเดล! กรุณาตรวจสอบว่าไฟล์ .pkl ถูกอัปโหลดขึ้น GitHub แล้ว")
-    st.warning("ไฟล์ที่ต้องมี: best_car_price_model.pkl, scaler.pkl, le_*.pkl")
 
-# Footer
 st.markdown("---")
 st.caption(f"© 2026 Used Car Price Prediction Project | Machine Learning Class | [{DEVELOPER_NAME}]({GITHUB_URL})")
