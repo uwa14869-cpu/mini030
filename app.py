@@ -7,7 +7,7 @@ from pathlib import Path
 # ==========================================
 # ตั้งค่าหน้าเว็บและข้อมูลผู้พัฒนา
 # ==========================================
-st.set_page_config(page_title="ทำนายราคารถมือสอง", page_icon="", layout="wide")
+st.set_page_config(page_title="ทำนายราคารถมือสอง", page_icon="🚗", layout="wide")
 
 # --- ส่วนแสดงข้อมูลผู้พัฒนา ---
 DEVELOPER_NAME = "นายสมชาย ใจดี"
@@ -15,9 +15,20 @@ STUDENT_ID = "65012345678"
 SECTION = "หมู่เรียน 30"
 GITHUB_URL = "https://github.com/uwa14869-cpu"
 
-# ✅ ใช้ Path object แทน String เพื่อให้ใช้ .exists() ได้
-IMAGE_FILE = "030.jpg" 
-img_path = Path(__file__).parent / IMAGE_FILE
+# ✅ ฟังก์ชันค้นหารูปอัตโนมัติ (รองรับหลายนามสกุล/ชื่อไฟล์)
+def find_profile_image():
+    possible_names = ["030.jpg", "030.png", "profile.jpg", "profile.png", "dev.jpg"]
+    base_path = Path(__file__).parent
+    
+    for name in possible_names:
+        img_file = base_path / name
+        if img_file.exists():
+            return str(img_file), name
+            
+    # ถ้าหาไม่เจอเลย ให้ใช้ลิงก์รูปตัวอย่างแทน
+    return "https://via.placeholder.com/150?text=No+Image", None
+
+image_source, found_filename = find_profile_image()
 
 # โหลดโมเดล
 @st.cache_resource
@@ -44,20 +55,18 @@ st.title("🚗 ระบบทำนายราคารถมือสอง")
 col_img, col_info = st.columns([1, 4])
 
 with col_img:
-    # ✅ แก้ไขตรงจุดที่ Error: เช็คว่า image_path มีอยู่จริงไหม
-    if img_path.exists():
-        st.image(str(img_path), width=150, caption="ผู้พัฒนา")
-    else:
-        # ถ้าหาไฟล์ไม่เจอ ให้แสดง Placeholder แทน ไม่ให้แอปพัง
-        st.warning(f"⚠️ ไม่พบไฟล์ `{IMAGE_FILE}` ใน GitHub")
-        st.markdown("![Profile](https://via.placeholder.com/150?text=No+Image)")
+    st.image(image_source, width=150, caption=f"ผู้พัฒนา ({found_filename or 'Default'})")
+    
+    # แจ้งเตือนเฉพาะเมื่อไม่พบไฟล์จริง (แต่แอปยังทำงานได้)
+    if found_filename is None:
+        st.warning("⚠️ ไม่พบรูปโปรไฟล์ใน GitHub\nกรุณาอัปโหลดไฟล์ 030.jpg หรือ profile.jpg")
 
 with col_info:
     st.info(f"""
-    **👨‍💻 ผู้พัฒนา:** {DEVELOPER_NAME}  
+    **‍💻 ผู้พัฒนา:** {DEVELOPER_NAME}  
     **🎓 รหัสนักศึกษา:** {STUDENT_ID} | **{SECTION}**  
     **🔗 GitHub:** [{GITHUB_URL}]({GITHUB_URL})  
-    **📅 ปีการศึกษา:** 2569 (2026)
+    ** ปีการศึกษา:** 2569 (2026)
     """)
 
 st.markdown("---")
