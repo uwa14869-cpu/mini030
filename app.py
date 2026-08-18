@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Used Car Price Predictor Web App - Streamlit (Enhanced UI)
+Used Car Price Predictor Web App - Streamlit
 """
 
 import streamlit as st
@@ -11,21 +11,20 @@ import os
 import base64
 
 # ============================================================
-# ⭐ ข้อมูลผู้พัฒนา
+# ⭐ ข้อมูลผู้พัฒนา (แก้ไขข้อมูลตรงนี้ได้ตามต้องการ)
 # ============================================================
 DEVELOPER_NAME = "นายภาณุพงศ์ ภุ่มพันธ์วงค์"
 DEVELOPER_ID   = "664245030"
 DEVELOPER_CLASS = "หมู่เรียน 66/43"
 DEVELOPER_FACULTY = "คณะวิทยาศาสตร์และเทคโนโลยี"
 DEVELOPER_UNIVERSITY = "มหาวิทยาลัยราชภัฏนครปฐม"
-DEVELOPER_IMAGE = "img/030.jpg.jpg"
-GITHUB_URL = "https://github.com/uwa14869-cpu"
+DEVELOPER_IMAGE = "img/030.jpg.jpg"  # วางไฟล์รูปในโฟลเดอร์ img/ ชื่อไฟล์ 030.jpg.jpg
 
 # ==========================================
 # ตั้งค่าหน้าเว็บ
 # ==========================================
 st.set_page_config(
-    page_title=" ทำนายราคารถมือสอง", 
+    page_title="🚗 ทำนายราคารถมือสอง", 
     page_icon="🚗", 
     layout="wide"
 )
@@ -35,139 +34,71 @@ st.set_page_config(
 # ==========================================
 st.markdown("""
 <style>
-    /* 1. พื้นหลังหลัก */
+    /* พื้นหลังหลัก */
     .stApp {
-        background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%) !important;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf3 100%);
     }
     
-    /* 2. ปรับสีตัวอักษรหลัก */
-    .stApp p, .stApp div, .stApp label, .stApp span {
-        color: #475569 !important; 
-    }
-    
-    h1, h2, h3, h4, h5, h6 {
-        color: #1e293b !important; 
-        font-weight: 700 !important;
-    }
-
-    /* 3. Header */
+    /* Header */
     .main-header {
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-        padding: 2.5rem 2rem;
-        border-radius: 20px;
-        color: white !important;
+        background: linear-gradient(135deg, #4C1FFF 0%, #764ba2 100%);
+        padding: 2rem;
+        border-radius: 15px;
+        color: white;
         text-align: center;
-        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
-        margin-bottom: 2.5rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
     }
     
     .main-header h1 {
-        color: white !important;
         margin: 0;
-        font-size: 2.8rem;
-        font-weight: 800;
-        letter-spacing: -0.5px;
+        font-size: 2.5rem;
+        font-weight: 700;
     }
     
-    .main-header p {
-        color: rgba(255, 255, 255, 0.9) !important;
-        margin-top: 0.8rem;
-        font-size: 1.1rem;
-        font-weight: 500;
-    }
-    
-    /* 4. Card หลัก */
+    /* Card */
     .card {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        padding: 1.8rem;
-        border-radius: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.08);
-        margin-bottom: 1.5rem;
-        transition: all 0.3s ease;
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-bottom: 1rem;
     }
     
-    .card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 30px rgba(99, 102, 241, 0.15);
-        border-color: rgba(99, 102, 241, 0.3);
+    /* Sidebar */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
     }
-    
-    .card h3 {
-        color: #4f46e5 !important;
-        margin-bottom: 1.2rem !important;
-        font-size: 1.3rem;
-        border-bottom: 2px solid #e2e8f0;
-        padding-bottom: 0.5rem;
-    }
-
-    /* 5. ปรับแต่ง Input Fields */
-    .stTextInput > div > div > input,
-    .stSelectbox > div > div > div,
-    .stNumberInput > div > div > input {
-        background-color: #f8fafc !important;
-        border: 1px solid #cbd5e1 !important;
-        border-radius: 10px !important;
-        color: #1e293b !important;
-        font-weight: 500;
-        transition: all 0.2s ease;
-    }
-    
-    .stTextInput > div > div > input:focus,
-    .stSelectbox > div > div > div:focus,
-    .stNumberInput > div > div > input:focus {
-        border-color: #6366f1 !important;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
-        background-color: #ffffff !important;
-    }
-
-    /* 6. ปรับแต่งปุ่ม */
-    .stButton > button {
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+    [data-testid="stSidebar"] * {
         color: white !important;
-        border: none !important;
-        padding: 0.8rem 2rem !important;
-        border-radius: 12px !important;
-        font-weight: 700 !important;
-        font-size: 1.1rem !important;
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4) !important;
-        transition: all 0.3s ease !important;
-    }
-    
-    .stButton > button:hover {
-        transform: translateY(-2px) !important;
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6) !important;
     }
 
-    /* 7. Developer Section */
+    /* ⭐ Developer Section CSS */
     .dev-section-title {
         text-align: center;
-        color: #1e293b !important;
+        color: #2c3e50;
         font-size: 2rem;
-        font-weight: 800;
+        font-weight: bold;
         margin: 3rem 0 1.5rem 0;
-        letter-spacing: -0.5px;
     }
     
     .dev-card-container {
-        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-        border-radius: 24px;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border-radius: 25px;
         padding: 2.5rem;
-        box-shadow: 0 15px 35px rgba(99, 102, 241, 0.1);
+        box-shadow: 0 15px 35px rgba(76, 31, 255, 0.15);
         margin: 1rem auto;
         max-width: 900px;
         display: flex;
         align-items: center;
         gap: 2.5rem;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: 1px solid rgba(99, 102, 241, 0.15);
+        border: 1px solid rgba(76, 31, 255, 0.1);
     }
     
     .dev-card-container:hover {
         transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+        box-shadow: 0 20px 40px rgba(76, 31, 255, 0.25);
     }
     
     .dev-image-wrapper {
@@ -180,16 +111,16 @@ st.markdown("""
         height: 180px;
         border-radius: 50%;
         object-fit: cover;
-        border: 4px solid #ffffff;
-        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        border: 5px solid #4C1FFF;
+        box-shadow: 0 8px 20px rgba(76, 31, 255, 0.3);
     }
     
     .dev-image-wrapper::after {
         content: "🚗";
         position: absolute;
-        bottom: 5px;
-        right: 5px;
-        font-size: 2.2rem;
+        top: -5px;
+        right: -5px;
+        font-size: 2.5rem;
         background: white;
         border-radius: 50%;
         width: 50px;
@@ -197,8 +128,7 @@ st.markdown("""
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        border: 3px solid #f8fafc;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
     
     .dev-info {
@@ -207,22 +137,21 @@ st.markdown("""
     
     .dev-name {
         font-size: 1.8rem;
-        font-weight: 800;
-        color: #4f46e5 !important;
+        font-weight: bold;
+        color: #2c3e50;
         margin: 0 0 0.8rem 0;
-        border-bottom: 3px solid #c7d2fe;
+        border-bottom: 3px solid #4C1FFF;
         padding-bottom: 0.5rem;
         display: inline-block;
     }
     
     .dev-detail {
         font-size: 1.05rem;
-        color: #475569 !important;
+        color: #4a5568;
         margin: 0.6rem 0;
         display: flex;
         align-items: center;
         gap: 0.8rem;
-        font-weight: 500;
     }
     
     .dev-detail-icon {
@@ -233,47 +162,21 @@ st.markdown("""
     
     .dev-badge {
         display: inline-block;
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-        color: white !important;
+        background: linear-gradient(135deg, #4C1FFF 0%, #764ba2 100%);
+        color: white;
         padding: 0.5rem 1.5rem;
-        border-radius: 50px;
-        font-weight: 700;
-        margin-top: 1.2rem;
-        font-size: 0.9rem;
-        letter-spacing: 0.5px;
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-    }
-    
-    /* GitHub Link Style */
-    .github-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: linear-gradient(135deg, #24292e 0%, #424549 100%);
-        color: white !important;
-        padding: 0.5rem 1.2rem;
-        border-radius: 8px;
-        font-weight: 600;
-        text-decoration: none !important;
+        border-radius: 25px;
+        font-weight: bold;
         margin-top: 1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 8px rgba(36, 41, 46, 0.3);
-    }
-    
-    .github-link:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(36, 41, 46, 0.4);
-    }
-    
-    .github-icon {
-        font-size: 1.2rem;
+        font-size: 0.95rem;
+        box-shadow: 0 4px 12px rgba(76, 31, 255, 0.3);
     }
     
     @media (max-width: 768px) {
         .dev-card-container {
             flex-direction: column;
             text-align: center;
-            padding: 2rem 1.5rem;
+            padding: 1.5rem;
         }
         .dev-image-wrapper img {
             width: 150px;
@@ -293,102 +196,13 @@ st.markdown("""
         width: 180px;
         height: 180px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        background: linear-gradient(135deg, #4C1FFF 0%, #764ba2 100%);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 5rem;
-        border: 4px solid white;
-        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
-    }
-
-    /* 8. สรุปข้อมูลแบบแยกข้อ + กรอบสวยๆ */
-    .summary-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.8rem;
-        margin-top: 1rem;
-    }
-    
-    .summary-row {
-        display: flex;
-        align-items: center;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 14px;
-        padding: 1rem 1.3rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        transition: all 0.3s ease;
-    }
-    
-    .summary-row:hover {
-        transform: translateX(4px);
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.15);
-        border-color: #6366f1;
-    }
-    
-    .summary-row-icon {
-        font-size: 1.6rem;
-        min-width: 45px;
-        height: 45px;
-        background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 1rem;
-    }
-    
-    .summary-row-label {
-        font-size: 0.95rem;
-        color: #64748b !important;
-        font-weight: 600;
-        min-width: 120px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .summary-row-divider {
-        flex: 0 0 1px;
-        height: 24px;
-        background: #e2e8f0;
-        margin: 0 1rem;
-    }
-    
-    .summary-row-value {
-        font-size: 1.1rem;
-        color: #1e293b !important;
-        font-weight: 700;
-        margin-left: auto;
-        text-align: right;
-    }
-
-    /* 9. Footer */
-    .custom-footer {
-        background: #1e293b;
-        color: #94a3b8 !important;
-        padding: 1.5rem;
-        border-radius: 16px 16px 0 0;
-        margin-top: 3rem;
-        text-align: center;
-    }
-    .custom-footer p {
-        color: #94a3b8 !important;
-        margin: 0.3rem 0;
-        font-size: 0.95rem;
-    }
-    .custom-footer strong {
-        color: #e2e8f0 !important;
-    }
-    .custom-footer a {
-        color: #818cf8 !important;
-        text-decoration: none !important;
-        font-weight: 600;
-        transition: all 0.2s ease;
-    }
-    .custom-footer a:hover {
-        color: #a5b4fc !important;
-        text-decoration: underline !important;
+        border: 5px solid white;
+        box-shadow: 0 8px 20px rgba(76, 31, 255, 0.3);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -431,7 +245,7 @@ model, scaler, le_brand, le_model, le_fuel, le_trans, is_loaded = load_assets()
 st.markdown("""
 <div class="main-header">
     <h1>🚗 ระบบทำนายราคารถมือสอง</h1>
-    <p>Interactive Machine Learning Prediction System</p>
+    <p style="margin-top: 0.5rem; opacity: 0.9;">Interactive Machine Learning Prediction System</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -472,31 +286,11 @@ if is_loaded:
             st.success(f"💰 ราคาที่ทำนายได้: **{predicted_price:,.0f} บาท**")
             
             st.markdown("### 📋 สรุปข้อมูลที่กรอก")
-            
-            # --- สร้างรายการสรุปข้อมูลแบบแยกข้อ + กรอบสวย ---
-            summary_items = [
-                {"icon": "🏷️", "label": "ยี่ห้อ", "value": brand},
-                {"icon": "🚘", "label": "รุ่น", "value": model_name},
-                {"icon": "📅", "label": "ปีที่ผลิต", "value": str(year)},
-                {"icon": "🛣️", "label": "ระยะทาง", "value": f"{mileage:,} กม."},
-                {"icon": "⛽", "label": "เชื้อเพลิง", "value": fuel},
-                {"icon": "⚙️", "label": "ระบบเกียร์", "value": transmission}
-            ]
-            
-            summary_html = '<div class="summary-list">'
-            for item in summary_items:
-                summary_html += f"""
-                <div class="summary-row">
-                    <div class="summary-row-icon">{item['icon']}</div>
-                    <div class="summary-row-label">{item['label']}</div>
-                    <div class="summary-row-divider"></div>
-                    <div class="summary-row-value">{item['value']}</div>
-                </div>
-                """
-            summary_html += '</div>'
-            
-            st.markdown(summary_html, unsafe_allow_html=True)
-            # -----------------------------------------------
+            summary = pd.DataFrame({
+                "ฟีเจอร์": ["ยี่ห้อ", "รุ่น", "ปี", "ไมล์", "เชื้อเพลิง", "เกียร์"],
+                "ค่าที่กรอก": [brand, model_name, year, f"{mileage:,} กม.", fuel, transmission]
+            })
+            st.table(summary)
             
         except Exception as e:
             st.error(f"❌ เกิดข้อผิดพลาด: {str(e)}")
@@ -505,7 +299,7 @@ else:
     st.error("⚠️ ไม่พบไฟล์โมเดล! กรุณาตรวจสอบว่าไฟล์ .pkl อยู่ในโฟลเดอร์เดียวกันกับไฟล์ app.py")
 
 # ============================================================
-#  Developer Section
+# ⭐ Developer Section - จัดวางรูป ชื่อ หมู่เรียน ใหม่
 # ============================================================
 st.markdown("---")
 st.markdown('<div class="dev-section-title">👨‍💻 ผู้พัฒนา / Developer</div>', unsafe_allow_html=True)
@@ -514,7 +308,7 @@ img_base64 = get_developer_image_base64()
 if img_base64:
     image_html = f'<img src="data:image/jpeg;base64,{img_base64}" alt="Developer Photo">'
 else:
-    image_html = '<div class="dev-emoji-fallback">👨‍</div>'
+    image_html = '<div class="dev-emoji-fallback">👨‍💻</div>'
 
 st.markdown(f"""
 <div class="dev-card-container">
@@ -539,10 +333,7 @@ st.markdown(f"""
             <span class="dev-detail-icon">🏫</span>
             <span><b>มหาวิทยาลัย:</b> {DEVELOPER_UNIVERSITY}</span>
         </div>
-        <a href="{GITHUB_URL}" target="_blank" class="github-link">
-            <span class="github-icon"></span>
-            <span>GitHub Profile</span>
-        </a>
+        <span class="dev-badge">✨ Data Science Developer</span>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -552,10 +343,10 @@ st.markdown("<br>", unsafe_allow_html=True)
 # ==========================================
 # Footer
 # ==========================================
+st.markdown("---")
 st.markdown(f"""
-<div class="custom-footer">
+<div style='text-align: center; color: #666; padding: 1rem;'>
     <p>© 2026 Used Car Price Prediction Project | Machine Learning Class</p>
-    <p>พัฒนาโดย: <strong>{DEVELOPER_NAME}</strong></p>
-    <p>🔗 <a href="{GITHUB_URL}" target="_blank">GitHub: uwa14869-cpu</a></p>
+    <p>พัฒนาโดย: {DEVELOPER_NAME}</p>
 </div>
 """, unsafe_allow_html=True)
