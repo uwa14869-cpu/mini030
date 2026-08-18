@@ -18,7 +18,7 @@ DEVELOPER_ID   = "664245030"
 DEVELOPER_CLASS = "หมู่เรียน 66/43"
 DEVELOPER_FACULTY = "คณะวิทยาศาสตร์และเทคโนโลยี"
 DEVELOPER_UNIVERSITY = "มหาวิทยาลัยราชภัฏนครปฐม"
-DEVELOPER_IMAGE = "img/030.jpg.jpg"  # วางไฟล์รูปในโฟลเดอร์ img/ ชื่อไฟล์ 030.jpg.jpg
+DEVELOPER_IMAGE = "img/030.jpg.jpg"
 
 # ==========================================
 # ตั้งค่าหน้าเว็บ
@@ -39,7 +39,7 @@ st.markdown("""
         background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%) !important;
     }
     
-    /* 2. ปรับสีตัวอักษรหลักให้อ่านง่าย */
+    /* 2. ปรับสีตัวอักษรหลัก */
     .stApp p, .stApp div, .stApp label, .stApp span {
         color: #475569 !important; 
     }
@@ -277,50 +277,66 @@ st.markdown("""
     }
 
     /* ==========================================
-       8. 🌟 สรุปข้อมูลแบบการ์ด (ใหม่!)
+       8. 🌟 สรุปข้อมูลแบบแยกข้อ + กรอบสวยๆ
        ========================================== */
-    .summary-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 1rem;
+    .summary-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
         margin-top: 1rem;
     }
     
-    .summary-card {
+    .summary-row {
+        display: flex;
+        align-items: center;
         background: #ffffff;
         border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        padding: 1.2rem 1rem;
-        text-align: center;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        border-radius: 14px;
+        padding: 1rem 1.3rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         transition: all 0.3s ease;
     }
     
-    .summary-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
+    .summary-row:hover {
+        transform: translateX(4px);
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.15);
         border-color: #6366f1;
     }
     
-    .summary-icon {
-        font-size: 1.8rem;
-        margin-bottom: 0.5rem;
+    .summary-row-icon {
+        font-size: 1.6rem;
+        min-width: 45px;
+        height: 45px;
+        background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
     }
     
-    .summary-label {
-        font-size: 0.8rem;
+    .summary-row-label {
+        font-size: 0.95rem;
         color: #64748b !important;
-        font-weight: 700;
+        font-weight: 600;
+        min-width: 120px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        margin-bottom: 0.3rem;
     }
     
-    .summary-value {
-        font-size: 1.15rem;
+    .summary-row-divider {
+        flex: 0 0 1px;
+        height: 24px;
+        background: #e2e8f0;
+        margin: 0 1rem;
+    }
+    
+    .summary-row-value {
+        font-size: 1.1rem;
         color: #1e293b !important;
-        font-weight: 800;
-        word-break: break-word;
+        font-weight: 700;
+        margin-left: auto;
+        text-align: right;
     }
 
     /* 9. Footer */
@@ -423,29 +439,30 @@ if is_loaded:
             
             st.markdown("### 📋 สรุปข้อมูลที่กรอก")
             
-            # --- สร้างการ์ดสรุปข้อมูลแบบสวยงาม ---
+            # --- สร้างรายการสรุปข้อมูลแบบแยกข้อ + กรอบสวย ---
             summary_items = [
                 {"icon": "🏷️", "label": "ยี่ห้อ", "value": brand},
                 {"icon": "🚘", "label": "รุ่น", "value": model_name},
-                {"icon": "📅", "label": "ปีที่ผลิต", "value": year},
+                {"icon": "📅", "label": "ปีที่ผลิต", "value": str(year)},
                 {"icon": "🛣️", "label": "ระยะทาง", "value": f"{mileage:,} กม."},
                 {"icon": "⛽", "label": "เชื้อเพลิง", "value": fuel},
                 {"icon": "⚙️", "label": "ระบบเกียร์", "value": transmission}
             ]
             
-            summary_html = '<div class="summary-grid">'
+            summary_html = '<div class="summary-list">'
             for item in summary_items:
                 summary_html += f"""
-                <div class="summary-card">
-                    <div class="summary-icon">{item['icon']}</div>
-                    <div class="summary-label">{item['label']}</div>
-                    <div class="summary-value">{item['value']}</div>
+                <div class="summary-row">
+                    <div class="summary-row-icon">{item['icon']}</div>
+                    <div class="summary-row-label">{item['label']}</div>
+                    <div class="summary-row-divider"></div>
+                    <div class="summary-row-value">{item['value']}</div>
                 </div>
                 """
             summary_html += '</div>'
             
             st.markdown(summary_html, unsafe_allow_html=True)
-            # ------------------------------------
+            # -----------------------------------------------
             
         except Exception as e:
             st.error(f"❌ เกิดข้อผิดพลาด: {str(e)}")
