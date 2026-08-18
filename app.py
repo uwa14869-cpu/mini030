@@ -9,28 +9,28 @@ from pathlib import Path
 # ==========================================
 st.set_page_config(page_title="ทำนายราคารถมือสอง", page_icon="🚗", layout="wide")
 
-# --- ส่วนแสดงข้อมูลผู้พัฒนา ---
+# --- ข้อมูลผู้พัฒนา ---
 DEVELOPER_NAME = "นายสมชาย ใจดี"
 STUDENT_ID = "65012345678"
 SECTION = "หมู่เรียน 30"
 GITHUB_URL = "https://github.com/uwa14869-cpu"
 
-# ✅ ฟังก์ชันค้นหารูปอัตโนมัติ (รองรับหลายนามสกุล/ชื่อไฟล์)
-def find_profile_image():
-    possible_names = ["030.jpg", "030.png", "profile.jpg", "profile.png", "dev.jpg"]
-    base_path = Path("030.jpg").parent
+# ✅ ระบบโหลดรูปอัจฉริยะ (ไม่ต้องใช้ Terminal)
+def get_profile_image():
+    # ลองหาไฟล์จากโฟลเดอร์เดียวกันกับ app.py
+    local_path = Path(__file__).parent / "030.jpg"
     
-    for name in possible_names:
-        img_file = base_path / name
-        if img_file.exists():
-            return str(img_file), name
-            
-    # ถ้าหาไม่เจอเลย ให้ใช้ลิงก์รูปตัวอย่างแทน
-    return "https://via.placeholder.com/150?text=No+Image", None
+    if local_path.exists():
+        return str(local_path), True
+    
+    # ถ้าหาไม่เจอ ใช้ลิงก์ Raw จาก GitHub โดยตรง (ต้องเปลี่ยนชื่อ repo ให้ตรง)
+    # วิธีนี้ทำงานได้แม้ไฟล์จะไม่อยู่ในโฟลเดอร์ root แต่อยู่บน GitHub แล้ว
+    github_raw_url = "https://raw.githubusercontent.com/uwa14869-cpu/mini030/main/030.jpg"
+    return github_raw_url, False
 
-image_source, found_filename = find_profile_image()
+image_source, is_local = get_profile_image()
 
-# โหลดโมเดล
+# โหลดโมเดล ML
 @st.cache_resource
 def load_assets():
     try:
@@ -47,26 +47,24 @@ def load_assets():
 model, scaler, le_brand, le_model, le_fuel, le_trans, is_loaded = load_assets()
 
 # ==========================================
-# UI หลัก
+# UI หลักของแอปพลิเคชัน
 # ==========================================
-st.title("🚗 ระบบทำนายราคารถมือสอง")
+st.title(" ระบบทำนายราคารถมือสอง")
 
-# แสดงข้อมูลผู้พัฒนาพร้อมรูปภาพ
+# ส่วนแสดงข้อมูลผู้พัฒนา + รูปโปรไฟล์
 col_img, col_info = st.columns([1, 4])
 
 with col_img:
-    st.image(image_source, width=150, caption=f"ผู้พัฒนา ({found_filename or 'Default'})")
-    
-    # แจ้งเตือนเฉพาะเมื่อไม่พบไฟล์จริง (แต่แอปยังทำงานได้)
-    if found_filename is None:
-        st.warning("⚠️ ไม่พบรูปโปรไฟล์ใน GitHub\nกรุณาอัปโหลดไฟล์ 030.jpg หรือ profile.jpg")
+    st.image(image_source, width=150, caption="ผู้พัฒนา")
+    if not is_local:
+        st.caption("️ แสดงรูปจาก GitHub URL\n(แนะนำให้ Upload ไฟล์ 030.jpg ผ่านหน้าเว็บ)")
 
 with col_info:
     st.info(f"""
-    **‍💻 ผู้พัฒนา:** {DEVELOPER_NAME}  
+    **👨💻 ผู้พัฒนา:** {DEVELOPER_NAME}  
     **🎓 รหัสนักศึกษา:** {STUDENT_ID} | **{SECTION}**  
     **🔗 GitHub:** [{GITHUB_URL}]({GITHUB_URL})  
-    ** ปีการศึกษา:** 2569 (2026)
+    **📅 ปีการศึกษา:** 2569 (2026)
     """)
 
 st.markdown("---")
