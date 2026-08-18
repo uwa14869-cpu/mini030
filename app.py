@@ -3,48 +3,63 @@ import pandas as pd
 import numpy as np
 import joblib
 
-# ตั้งค่าหน้าเว็บ
+# ==========================================
+# ตั้งค่าหน้าเว็บและข้อมูลผู้พัฒนา
+# ==========================================
 st.set_page_config(page_title="ทำนายราคารถมือสอง", page_icon="🚗", layout="wide")
+
+# --- ส่วนแสดงข้อมูลผู้พัฒนา (แก้ไขตรงนี้) ---
+DEVELOPER_NAME = "นายสมชาย ใจดี"          # <-- ใส่ชื่อ-นามสกุล จริง
+STUDENT_ID = "65012345678"               # <-- ใส่รหัสนักศึกษา
+SECTION = "หมู่เรียน 30"                 # <-- ใส่เลขหมู่เรียน
+GITHUB_URL = "https://github.com/uwa14869-cpu"  # ✅ ลิงก์ GitHub ของคุณ
+# -----------------------------------------
 
 # โหลดโมเดลและเครื่องมือที่บันทึกไว้
 @st.cache_resource
 def load_assets():
-    model = joblib.load('best_car_price_model.pkl')
-    scaler = joblib.load('scaler.pkl')
-    le_brand = joblib.load('le_brand.pkl')
-    le_model = joblib.load('le_model.pkl')
-    le_fuel = joblib.load('le_fuel.pkl')
-    le_trans = joblib.load('le_trans.pkl')
-    return model, scaler, le_brand, le_model, le_fuel, le_trans
+    try:
+        model = joblib.load('best_car_price_model.pkl')
+        scaler = joblib.load('scaler.pkl')
+        le_brand = joblib.load('le_brand.pkl')
+        le_model = joblib.load('le_model.pkl')
+        le_fuel = joblib.load('le_fuel.pkl')
+        le_trans = joblib.load('le_trans.pkl')
+        return model, scaler, le_brand, le_model, le_fuel, le_trans, True
+    except FileNotFoundError as e:
+        return None, None, None, None, None, None, False
 
-try:
-    model, scaler, le_brand, le_model, le_fuel, le_trans = load_assets()
-    is_loaded = True
-except FileNotFoundError:
-    st.error("❌ ไม่พบไฟล์โมเดล! กรุณารัน train_model.py ก่อน")
-    is_loaded = False
+model, scaler, le_brand, le_model, le_fuel, le_trans, is_loaded = load_assets()
 
 # ==========================================
-# 5. Streamlit Application (5 คะแนน)
+# UI หลักของ Streamlit Application
 # ==========================================
-st.title("🚗 ระบบทำนายราคารถมือสอง")
+st.title(" ระบบทำนายราคารถมือสอง")
+
+# แสดงกล่องข้อมูลผู้พัฒนาพร้อมลิงก์ GitHub ที่คลิกได้
+st.info(f"""
+**👨‍ ผู้พัฒนา:** {DEVELOPER_NAME}  
+**🎓 รหัสนักศึกษา:** {STUDENT_ID} | **{SECTION}**  
+** GitHub Repository:** [{GITHUB_URL}]({GITHUB_URL})  
+**📅 ปีการศึกษา:** 2569 (2026)
+""")
+
 st.markdown("---")
-st.caption("พัฒนาโดย: [ชื่อ-นามสกุลของคุณ] | หมู่เรียน: [เลขหมู่]")
 
 if is_loaded:
     col1, col2 = st.columns(2)
     
     with col1:
         st.subheader("📝 กรอกข้อมูลรถ")
-        brand = st.selectbox("ยี่ห้อ", le_brand.classes_)
-        model_name = st.selectbox("รุ่น", le_model.classes_)
-        year = st.number_input("ปีที่ผลิต", min_value=2000, max_value=2026, value=2018)
+        brand = st.selectbox("ยี่ห้อ", sorted(le_brand.classes_))
+        model_name = st.selectbox("รุ่น", sorted(le_model.classes_))
+        year = st.number_input("ปีที่ผลิต", min_value=2000, max_value=2026, value=2018, step=1)
         mileage = st.number_input("ระยะทาง (กม.)", min_value=0, value=50000, step=1000)
     
     with col2:
         st.subheader("⚙️ สเปคเพิ่มเติม")
-        fuel = st.selectbox("ประเภทเชื้อเพลิง", le_fuel.classes_)
-        transmission = st.selectbox("ระบบเกียร์", le_trans.classes_)
+        fuel = st.selectbox("ประเภทเชื้อเพลิง", sorted(le_fuel.classes_))
+        transmission = st.selectbox("ระบบเกียร์", sorted(le_trans.classes_))
         
         st.markdown("<br>", unsafe_allow_html=True)
         predict_btn = st.button("🔮 ทำนายราคา", type="primary", use_container_width=True)
@@ -62,12 +77,13 @@ if is_loaded:
                 'Trans_Enc': le_trans.transform([transmission])
             })
             
-            # Transform ด้วย Scaler (ถ้าโมเดลต้องการ)
+            # Transform ด้วย Scaler
             input_scaled = scaler.transform(input_data)
             
             # ทำนาย
             predicted_price = model.predict(input_scaled)[0]
             
+            # แสดงผลลัพธ์แบบเด่นชัด
             st.success(f"💰 ราคาที่ทำนายได้: **{predicted_price:,.0f} บาท**")
             
             # แสดงรายละเอียด Input
@@ -80,11 +96,12 @@ if is_loaded:
             st.table(summary)
             
         except Exception as e:
-            st.error(f"เกิดข้อผิดพลาด: {str(e)}")
+            st.error(f"❌ เกิดข้อผิดพลาด: {str(e)}")
 
 else:
-    st.warning("⚠️ กรุณาเทรนโมเดลก่อนใช้งานแอปพลิเคชัน")
+    st.error("⚠️ ไม่พบไฟล์โมเดล! กรุณาตรวจสอบว่าไฟล์ .pkl ถูกอัปโหลดขึ้น GitHub แล้ว")
+    st.warning("ไฟล์ที่ต้องมี: best_car_price_model.pkl, scaler.pkl, le_*.pkl")
 
 # Footer
 st.markdown("---")
-st.caption("© 2026 Used Car Price Prediction Project | Machine Learning Class")
+st.caption(f"© 2026 Used Car Price Prediction Project | Machine Learning Class | [{DEVELOPER_NAME}]({GITHUB_URL})")
