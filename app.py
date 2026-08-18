@@ -18,7 +18,7 @@ DEVELOPER_ID   = "664245030"
 DEVELOPER_CLASS = "หมู่เรียน 66/43"
 DEVELOPER_FACULTY = "คณะวิทยาศาสตร์และเทคโนโลยี"
 DEVELOPER_UNIVERSITY = "มหาวิทยาลัยราชภัฏนครปฐม"
-DEVELOPER_IMAGE = "img/030.jpg.jpg"
+DEVELOPER_IMAGE = "img/030.jpg.jpg"  # วางไฟล์รูปในโฟลเดอร์ img/ ชื่อไฟล์ 030.jpg.jpg
 
 # ==========================================
 # ตั้งค่าหน้าเว็บ
@@ -30,26 +30,26 @@ st.set_page_config(
 )
 
 # ==========================================
-# Custom CSS สำหรับความสวยงาม
+# Custom CSS สำหรับความสวยงาม (ปรับปรุงใหม่)
 # ==========================================
 st.markdown("""
 <style>
-    /* 1. พื้นหลังหลัก */
+    /* 1. พื้นหลังหลัก: เปลี่ยนเป็นโทนขาว-ฟ้าอ่อน สบายตา */
     .stApp {
         background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%) !important;
     }
     
-    /* 2. ปรับสีตัวอักษรหลัก */
+    /* 2. ปรับสีตัวอักษรหลักให้อ่านง่าย สบายตา */
     .stApp p, .stApp div, .stApp label, .stApp span {
-        color: #475569 !important; 
+        color: #475569 !important; /* Slate Gray */
     }
     
     h1, h2, h3, h4, h5, h6 {
-        color: #1e293b !important; 
+        color: #1e293b !important; /* Deep Slate สำหรับหัวข้อ */
         font-weight: 700 !important;
     }
 
-    /* 3. Header */
+    /* 3. Header: ปรับ Gradient ให้สดใสและทันสมัยขึ้น */
     .main-header {
         background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
         padding: 2.5rem 2rem;
@@ -75,7 +75,7 @@ st.markdown("""
         font-weight: 500;
     }
     
-    /* 4. Card หลัก */
+    /* 4. Card: เพิ่มเอฟเฟกต์ Glassmorphism และเงาที่นุ่มนวล */
     .card {
         background: rgba(255, 255, 255, 0.85);
         backdrop-filter: blur(12px);
@@ -102,7 +102,7 @@ st.markdown("""
         padding-bottom: 0.5rem;
     }
 
-    /* 5. ปรับแต่ง Input Fields */
+    /* 5. ปรับแต่ง Input Fields ให้สวยงาม */
     .stTextInput > div > div > input,
     .stSelectbox > div > div > div,
     .stNumberInput > div > div > input {
@@ -140,7 +140,7 @@ st.markdown("""
         box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6) !important;
     }
 
-    /* 7. Developer Section */
+    /* 7. Developer Section: ปรับให้กลมกลืนและพรีเมียมขึ้น */
     .dev-section-title {
         text-align: center;
         color: #1e293b !important;
@@ -276,70 +276,7 @@ st.markdown("""
         box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
     }
 
-    /* ==========================================
-       8. 🌟 สรุปข้อมูลแบบแยกข้อ + กรอบสวยๆ
-       ========================================== */
-    .summary-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.8rem;
-        margin-top: 1rem;
-    }
-    
-    .summary-row {
-        display: flex;
-        align-items: center;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 14px;
-        padding: 1rem 1.3rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        transition: all 0.3s ease;
-    }
-    
-    .summary-row:hover {
-        transform: translateX(4px);
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.15);
-        border-color: #6366f1;
-    }
-    
-    .summary-row-icon {
-        font-size: 1.6rem;
-        min-width: 45px;
-        height: 45px;
-        background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 1rem;
-    }
-    
-    .summary-row-label {
-        font-size: 0.95rem;
-        color: #64748b !important;
-        font-weight: 600;
-        min-width: 120px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .summary-row-divider {
-        flex: 0 0 1px;
-        height: 24px;
-        background: #e2e8f0;
-        margin: 0 1rem;
-    }
-    
-    .summary-row-value {
-        font-size: 1.1rem;
-        color: #1e293b !important;
-        font-weight: 700;
-        margin-left: auto;
-        text-align: right;
-    }
-
-    /* 9. Footer */
+    /* 8. Footer */
     .custom-footer {
         background: #1e293b;
         color: #94a3b8 !important;
@@ -438,31 +375,11 @@ if is_loaded:
             st.success(f"💰 ราคาที่ทำนายได้: **{predicted_price:,.0f} บาท**")
             
             st.markdown("### 📋 สรุปข้อมูลที่กรอก")
-            
-            # --- สร้างรายการสรุปข้อมูลแบบแยกข้อ + กรอบสวย ---
-            summary_items = [
-                {"icon": "🏷️", "label": "ยี่ห้อ", "value": brand},
-                {"icon": "🚘", "label": "รุ่น", "value": model_name},
-                {"icon": "📅", "label": "ปีที่ผลิต", "value": str(year)},
-                {"icon": "🛣️", "label": "ระยะทาง", "value": f"{mileage:,} กม."},
-                {"icon": "⛽", "label": "เชื้อเพลิง", "value": fuel},
-                {"icon": "⚙️", "label": "ระบบเกียร์", "value": transmission}
-            ]
-            
-            summary_html = '<div class="summary-list">'
-            for item in summary_items:
-                summary_html += f"""
-                <div class="summary-row">
-                    <div class="summary-row-icon">{item['icon']}</div>
-                    <div class="summary-row-label">{item['label']}</div>
-                    <div class="summary-row-divider"></div>
-                    <div class="summary-row-value">{item['value']}</div>
-                </div>
-                """
-            summary_html += '</div>'
-            
-            st.markdown(summary_html, unsafe_allow_html=True)
-            # -----------------------------------------------
+            summary = pd.DataFrame({
+                "ฟีเจอร์": ["ยี่ห้อ", "รุ่น", "ปี", "ไมล์", "เชื้อเพลิง", "เกียร์"],
+                "ค่าที่กรอก": [brand, model_name, year, f"{mileage:,} กม.", fuel, transmission]
+            })
+            st.table(summary)
             
         except Exception as e:
             st.error(f"❌ เกิดข้อผิดพลาด: {str(e)}")
