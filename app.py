@@ -18,7 +18,7 @@ GITHUB_URL = "https://github.com/uwa14869-cpu"
 # ✅ ใช้ Path เพื่อหาไฟล์รูปในโฟลเดอร์เดียวกันกับ app.py
 # เปลี่ยน 'profile.jpg' เป็นชื่อไฟล์รูปจริงของคุณ
 IMAGE_FILE = "030.jpg" 
-image_path = Path(__file__).parent / IMAGE_FILE
+PROFILE_IMAGE_URL = "https://raw.githubusercontent.com/uwa14869-cpu/mini030/main/030.jpg"
 
 # โหลดโมเดล
 @st.cache_resource
@@ -45,12 +45,12 @@ st.title("🚗 ระบบทำนายราคารถมือสอง")
 col_img, col_info = st.columns([1, 4])
 
 with col_img:
-    if image_path.exists():
-        st.image(str(image_path), width=150, caption="ผู้พัฒนา")
+    if PROFILE_IMAGE_URL.exists():
+        st.image(str(PROFILE_IMAGE_URL), width=150, caption="ผู้พัฒนา")
     else:
         # กรณีหาไฟล์รูปไม่เจอ จะแสดงข้อความเตือนแทนรูป
         st.warning(f"⚠️ ไม่พบไฟล์ `{IMAGE_FILE}`\nกรุณาอัปโหลดรูปขึ้น GitHub")
-        st.markdown("![Placeholder](https://via.placeholder.com/150)")
+        st.image(PROFILE_IMAGE_URL, width=150, caption="ผู้พัฒนา")
 
 with col_info:
     st.info(f"""
