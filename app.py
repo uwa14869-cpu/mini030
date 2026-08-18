@@ -30,26 +30,26 @@ st.set_page_config(
 )
 
 # ==========================================
-# Custom CSS สำหรับความสวยงาม (ปรับปรุงใหม่)
+# Custom CSS สำหรับความสวยงาม
 # ==========================================
 st.markdown("""
 <style>
-    /* 1. พื้นหลังหลัก: เปลี่ยนเป็นโทนขาว-ฟ้าอ่อน สบายตา */
+    /* 1. พื้นหลังหลัก */
     .stApp {
         background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%) !important;
     }
     
-    /* 2. ปรับสีตัวอักษรหลักให้อ่านง่าย สบายตา */
+    /* 2. ปรับสีตัวอักษรหลักให้อ่านง่าย */
     .stApp p, .stApp div, .stApp label, .stApp span {
-        color: #475569 !important; /* Slate Gray */
+        color: #475569 !important; 
     }
     
     h1, h2, h3, h4, h5, h6 {
-        color: #1e293b !important; /* Deep Slate สำหรับหัวข้อ */
+        color: #1e293b !important; 
         font-weight: 700 !important;
     }
 
-    /* 3. Header: ปรับ Gradient ให้สดใสและทันสมัยขึ้น */
+    /* 3. Header */
     .main-header {
         background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
         padding: 2.5rem 2rem;
@@ -75,7 +75,7 @@ st.markdown("""
         font-weight: 500;
     }
     
-    /* 4. Card: เพิ่มเอฟเฟกต์ Glassmorphism และเงาที่นุ่มนวล */
+    /* 4. Card หลัก */
     .card {
         background: rgba(255, 255, 255, 0.85);
         backdrop-filter: blur(12px);
@@ -102,7 +102,7 @@ st.markdown("""
         padding-bottom: 0.5rem;
     }
 
-    /* 5. ปรับแต่ง Input Fields ให้สวยงาม */
+    /* 5. ปรับแต่ง Input Fields */
     .stTextInput > div > div > input,
     .stSelectbox > div > div > div,
     .stNumberInput > div > div > input {
@@ -140,7 +140,7 @@ st.markdown("""
         box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6) !important;
     }
 
-    /* 7. Developer Section: ปรับให้กลมกลืนและพรีเมียมขึ้น */
+    /* 7. Developer Section */
     .dev-section-title {
         text-align: center;
         color: #1e293b !important;
@@ -276,7 +276,54 @@ st.markdown("""
         box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
     }
 
-    /* 8. Footer */
+    /* ==========================================
+       8. 🌟 สรุปข้อมูลแบบการ์ด (ใหม่!)
+       ========================================== */
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .summary-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 1.2rem 1rem;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        transition: all 0.3s ease;
+    }
+    
+    .summary-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
+        border-color: #6366f1;
+    }
+    
+    .summary-icon {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .summary-label {
+        font-size: 0.8rem;
+        color: #64748b !important;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.3rem;
+    }
+    
+    .summary-value {
+        font-size: 1.15rem;
+        color: #1e293b !important;
+        font-weight: 800;
+        word-break: break-word;
+    }
+
+    /* 9. Footer */
     .custom-footer {
         background: #1e293b;
         color: #94a3b8 !important;
@@ -375,11 +422,30 @@ if is_loaded:
             st.success(f"💰 ราคาที่ทำนายได้: **{predicted_price:,.0f} บาท**")
             
             st.markdown("### 📋 สรุปข้อมูลที่กรอก")
-            summary = pd.DataFrame({
-                "ฟีเจอร์": ["ยี่ห้อ", "รุ่น", "ปี", "ไมล์", "เชื้อเพลิง", "เกียร์"],
-                "ค่าที่กรอก": [brand, model_name, year, f"{mileage:,} กม.", fuel, transmission]
-            })
-            st.table(summary)
+            
+            # --- สร้างการ์ดสรุปข้อมูลแบบสวยงาม ---
+            summary_items = [
+                {"icon": "🏷️", "label": "ยี่ห้อ", "value": brand},
+                {"icon": "🚘", "label": "รุ่น", "value": model_name},
+                {"icon": "📅", "label": "ปีที่ผลิต", "value": year},
+                {"icon": "🛣️", "label": "ระยะทาง", "value": f"{mileage:,} กม."},
+                {"icon": "⛽", "label": "เชื้อเพลิง", "value": fuel},
+                {"icon": "⚙️", "label": "ระบบเกียร์", "value": transmission}
+            ]
+            
+            summary_html = '<div class="summary-grid">'
+            for item in summary_items:
+                summary_html += f"""
+                <div class="summary-card">
+                    <div class="summary-icon">{item['icon']}</div>
+                    <div class="summary-label">{item['label']}</div>
+                    <div class="summary-value">{item['value']}</div>
+                </div>
+                """
+            summary_html += '</div>'
+            
+            st.markdown(summary_html, unsafe_allow_html=True)
+            # ------------------------------------
             
         except Exception as e:
             st.error(f"❌ เกิดข้อผิดพลาด: {str(e)}")
